@@ -23,6 +23,7 @@ from plant_analysis.core.metrics import (
 )
 from plant_analysis.core.schemas import (
     AngleGrid,
+    AttitudeOutputPaths,
     ControllerSynthesisInputPaths,
     ControllerSynthesisOutputPaths,
     DiagnosisOutputPaths,
@@ -46,6 +47,7 @@ from plant_analysis.core.sysid import (
 
 __all__ = [
     "AngleGrid",
+    "AttitudeOutputPaths",
     "ControllerSynthesisInputPaths",
     "ControllerSynthesisOutputPaths",
     "DiagnosisOutputPaths",

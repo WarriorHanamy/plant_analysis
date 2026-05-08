@@ -21,7 +21,8 @@ def app(
     if type == "filter-chain":
         if input is None:
             raise typer.BadParameter("--input is required for filter-chain diagnostics")
-        report = run_filter_chain(input)
+        paths = DiagnosisOutputPaths(output_dir=output_dir)
+        report = run_filter_chain(input, paths)
         typer.echo(f"Found {len(report.signal_names)} filter-chain signals")
         return
     spec = FilterSpec(filter_type="butterworth", order=order, cutoff=fc, fs=fs)

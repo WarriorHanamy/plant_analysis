@@ -33,6 +33,23 @@ def read_ulog_filter_chain(path: str | Path) -> FilterChainReport:
     return FilterChainReport(signal_names=signal_names, fft_peaks=fft_peaks)
 
 
+def _ulog_spectra(path: str | Path) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    ulog = _ulog(path)
+    spectra: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    for dataset in ulog.data_list:
+        for name, values in dataset.data.items():
+            if "gyro" not in name.lower() and "rate" not in name.lower():
+                continue
+            arr = np.asarray(values, dtype=float)
+            if arr.size < 2:
+                continue
+            signal = f"{dataset.name}.{name}"
+            freq = np.fft.rfftfreq(len(arr))
+            mag = 20.0 * np.log10(np.maximum(np.abs(np.fft.rfft(arr - np.mean(arr))), 1e-15))
+            spectra[signal] = (freq, mag)
+    return spectra
+
+
 def read_ulog_chirp(path: str | Path) -> SweepResult:
     ulog = _ulog(path)
     for dataset in ulog.data_list:

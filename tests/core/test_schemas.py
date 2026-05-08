@@ -4,6 +4,7 @@ from pydantic import ValidationError
 
 from plant_analysis.core import schemas
 from plant_analysis.core.schemas import (
+    AttitudeOutputPaths,
     ControllerSynthesisInputPaths,
     ControllerSynthesisOutputPaths,
     DiagnosisOutputPaths,
@@ -104,3 +105,29 @@ def test_filter_spec_validates_order():
 def test_tuning_table_lengths_match():
     table = TuningTable(parameters=[{"Kp": 1.0}], metrics=[{"pm": 45.0}], status=["pass"])
     assert table.status == ["pass"]
+
+
+def test_attitude_output_paths_default_figs_dir():
+    paths = AttitudeOutputPaths()
+    assert paths.figs_dir.name == "attitude"
+    assert "figs" in str(paths.figs_dir)
+
+
+def test_controller_synthesis_output_paths_figs_subdirs():
+    paths = ControllerSynthesisOutputPaths()
+    assert paths.chirp_figs_dir.name == "chirp"
+    assert paths.sysid_figs_dir.name == "sysid"
+    assert paths.tuning_figs_dir.name == "tuning"
+
+
+def test_diagnosis_output_paths_filter_figures():
+    paths = DiagnosisOutputPaths()
+    assert paths.filter_bode_png.name == "filter_bode.png"
+    assert paths.filter_step_png.name == "filter_step.png"
+    assert paths.filter_impulse_png.name == "filter_impulse.png"
+    assert paths.filter_pole_zero_png.name == "filter_pole_zero.png"
+    assert paths.filter_group_delay_png.name == "filter_group_delay.png"
+    assert paths.filter_phase_delay_png.name == "filter_phase_delay.png"
+    assert paths.filter_time_sweep_png.name == "filter_time_sweep.png"
+    assert paths.filter_cascade_png.name == "filter_cascade.png"
+    assert paths.filter_chain_figs_dir.name == "filter_chain"

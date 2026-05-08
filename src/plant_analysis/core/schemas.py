@@ -13,6 +13,7 @@ DEFAULT_OUTPUT_DIR = Path("_output")
 
 __all__ = [
     "AngleGrid",
+    "AttitudeOutputPaths",
     "ControllerSynthesisInputPaths",
     "ControllerSynthesisOutputPaths",
     "DEFAULT_INPUT_DIR",
@@ -123,7 +124,8 @@ class ControllerSynthesisInputPaths(BaseModel):
 
 
 class ControllerSynthesisOutputPaths(BaseModel):
-    """Output file contract for the controller synthesis flow."""
+    """Output file contract for the controller synthesis flow —
+    data artifacts and diagnostic figs."""
 
     output_dir: Path = Field(
         default=DEFAULT_OUTPUT_DIR, description="Directory for generated artifacts"
@@ -131,6 +133,9 @@ class ControllerSynthesisOutputPaths(BaseModel):
     sweep_npz_name: str = "sweep_result.npz"
     plant_model_npz_name: str = "plant_id.npz"
     tuning_table_csv_name: str = "tuning_table.csv"
+    chirp_figs_subdir: str = "figs/chirp"
+    sysid_figs_subdir: str = "figs/sysid"
+    tuning_figs_subdir: str = "figs/tuning"
 
     @property
     def sweep_npz(self) -> Path:
@@ -144,6 +149,18 @@ class ControllerSynthesisOutputPaths(BaseModel):
     def tuning_table_csv(self) -> Path:
         return self.output_dir / self.tuning_table_csv_name
 
+    @property
+    def chirp_figs_dir(self) -> Path:
+        return self.output_dir / self.chirp_figs_subdir
+
+    @property
+    def sysid_figs_dir(self) -> Path:
+        return self.output_dir / self.sysid_figs_subdir
+
+    @property
+    def tuning_figs_dir(self) -> Path:
+        return self.output_dir / self.tuning_figs_subdir
+
 
 class DiagnosisOutputPaths(BaseModel):
     """Output file contract for diagnostics reports and figures."""
@@ -154,7 +171,14 @@ class DiagnosisOutputPaths(BaseModel):
     figs_dir_name: str = "figs"
     filter_bode_png_name: str = "filter_bode.png"
     filter_step_png_name: str = "filter_step.png"
+    filter_impulse_png_name: str = "filter_impulse.png"
+    filter_pole_zero_png_name: str = "filter_pole_zero.png"
+    filter_group_delay_png_name: str = "filter_group_delay.png"
+    filter_phase_delay_png_name: str = "filter_phase_delay.png"
+    filter_time_sweep_png_name: str = "filter_time_sweep.png"
+    filter_cascade_png_name: str = "filter_cascade.png"
     filter_report_npz_name: str = "filter_report.npz"
+    filter_chain_figs_subdir: str = "figs/filter_chain"
 
     @property
     def figs_dir(self) -> Path:
@@ -169,8 +193,36 @@ class DiagnosisOutputPaths(BaseModel):
         return self.figs_dir / self.filter_step_png_name
 
     @property
+    def filter_impulse_png(self) -> Path:
+        return self.figs_dir / self.filter_impulse_png_name
+
+    @property
+    def filter_pole_zero_png(self) -> Path:
+        return self.figs_dir / self.filter_pole_zero_png_name
+
+    @property
+    def filter_group_delay_png(self) -> Path:
+        return self.figs_dir / self.filter_group_delay_png_name
+
+    @property
+    def filter_phase_delay_png(self) -> Path:
+        return self.figs_dir / self.filter_phase_delay_png_name
+
+    @property
+    def filter_time_sweep_png(self) -> Path:
+        return self.figs_dir / self.filter_time_sweep_png_name
+
+    @property
+    def filter_cascade_png(self) -> Path:
+        return self.figs_dir / self.filter_cascade_png_name
+
+    @property
     def filter_report_npz(self) -> Path:
         return self.output_dir / self.filter_report_npz_name
+
+    @property
+    def filter_chain_figs_dir(self) -> Path:
+        return self.output_dir / self.filter_chain_figs_subdir
 
 
 class SisoTransferFunction(NumericModel):
@@ -278,6 +330,19 @@ class AngleGrid(NumericModel):
     @classmethod
     def _validate_array(cls, value: Any) -> FloatArray1D:
         return _finite_array_1d(value)
+
+
+class AttitudeOutputPaths(BaseModel):
+    """Output file contract for attitude comparison diagnostic figures."""
+
+    output_dir: Path = Field(
+        default=DEFAULT_OUTPUT_DIR, description="Directory for generated artifacts"
+    )
+    figs_subdir: str = "figs/attitude"
+
+    @property
+    def figs_dir(self) -> Path:
+        return self.output_dir / self.figs_subdir
 
 
 class TuningConstraints(BaseModel):

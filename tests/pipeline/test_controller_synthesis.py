@@ -45,9 +45,41 @@ def test_recorded_x_axis_csv_runs_chirp_and_synthesis_e2e(tmp_path):
     assert sweep.fs_hz > 0
     assert sweep.control.values.shape == sweep.output_filtered.values.shape
 
+    # Chirp figures
+    chirp_figs = output_paths.chirp_figs_dir
+    assert (chirp_figs / "chirp_time_domain.png").exists()
+    assert (chirp_figs / "chirp_spectrogram.png").exists()
+    assert (chirp_figs / "chirp_excitation_fft.png").exists()
+    assert (chirp_figs / "chirp_control_vs_output.png").exists()
+    assert (chirp_figs / "chirp_sampling_regularity.png").exists()
+
     table = run_synthesis(output_paths)
 
     assert table.parameters
     assert len(table.parameters) == len(table.metrics) == len(table.status)
     assert output_paths.plant_model_npz.exists()
     assert output_paths.tuning_table_csv.exists()
+
+    # SysId figures
+    sysid_figs = output_paths.sysid_figs_dir
+    assert (sysid_figs / "plant_bode_comparison.png").exists()
+    assert (sysid_figs / "plant_coherence.png").exists()
+    assert (sysid_figs / "plant_impulse_response.png").exists()
+    assert (sysid_figs / "plant_step_response.png").exists()
+    assert (sysid_figs / "plant_pole_zero_map.png").exists()
+    assert (sysid_figs / "plant_compare_time.png").exists()
+    assert (sysid_figs / "plant_residuals.png").exists()
+    assert (sysid_figs / "plant_lsq_regression_fit.png").exists()
+
+    # Tuning figures
+    tuning_figs = output_paths.tuning_figs_dir
+    assert (tuning_figs / "tuning_grid_kp_ki.png").exists()
+    assert (tuning_figs / "tuning_gain_margin_hist.png").exists()
+    assert (tuning_figs / "tuning_phase_margin_hist.png").exists()
+    assert (tuning_figs / "tuning_sensitivity_hist.png").exists()
+    assert (tuning_figs / "tuning_pass_fail_3d.png").exists()
+    assert (tuning_figs / "tuning_bandwidth_vs_margin.png").exists()
+    assert (tuning_figs / "tuning_loop_bode_best.png").exists()
+    assert (tuning_figs / "tuning_sensitivity_best.png").exists()
+    assert (tuning_figs / "tuning_step_response_best.png").exists()
+    assert (tuning_figs / "tuning_nyquist_best.png").exists()
