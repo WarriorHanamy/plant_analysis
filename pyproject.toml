@@ -1,0 +1,46 @@
+[project]
+name = "plant-analysis"
+version = "0.1.0"
+description = "PX4 chirp-based plant analysis: system identification, auto-tuning, filter diagnostics"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "control>=0.9",
+    "pyulog>=0.8",
+    "pydantic>=2",
+    "typer>=0.9",
+    "matplotlib>=3.7",
+]
+
+[project.scripts]
+plant-analysis = "plant_analysis.cli.main:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=7",
+    "ruff>=0.1",
+    "mypy>=1.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+[[tool.mypy.overrides]]
+module = ["control.*", "pyulog.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
